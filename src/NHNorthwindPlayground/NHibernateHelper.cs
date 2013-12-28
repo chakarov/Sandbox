@@ -9,8 +9,9 @@ using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Linq;
 using NHibernate.Mapping.ByCode;
+using NHNortwindPlayground.Mappings;
 
-namespace ClassLibrary1
+namespace NHNortwindPlayground
 {
     public class NHibernateHelper
     {

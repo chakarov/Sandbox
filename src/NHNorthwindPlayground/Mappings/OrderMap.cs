@@ -1,7 +1,8 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
+using NHNortwindPlayground.Domain;
 
-namespace ClassLibrary1
+namespace NHNortwindPlayground.Mappings
 {
     public class OrdersMap : ClassMapping<Orders>
     {
@@ -21,7 +22,7 @@ namespace ClassLibrary1
             Property(x => x.Shippostalcode);
             Property(x => x.Shipcountry);
 
-            Cache(cm=>cm.Usage(CacheUsage.NonstrictReadWrite));
+            Cache(cm => cm.Usage(CacheUsage.NonstrictReadWrite));
 
             ManyToOne(x => x.Customers, map =>
                                         {

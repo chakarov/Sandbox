@@ -1,11 +1,11 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
+using NHNortwindPlayground.Domain;
 
-namespace ClassLibrary1
+namespace NHNortwindPlayground.Mappings
 {
     public class ProductsMap : ClassMapping<Products>
     {
-
         public ProductsMap()
         {
             Schema("dbo");
@@ -18,7 +18,7 @@ namespace ClassLibrary1
             Property(x => x.Unitsonorder);
             Property(x => x.Reorderlevel);
             Property(x => x.Discontinued, map => map.NotNullable(true));
-            Cache(cm=>cm.Usage(CacheUsage.NonstrictReadWrite));
+            Cache(cm => cm.Usage(CacheUsage.NonstrictReadWrite));
         }
     }
 }

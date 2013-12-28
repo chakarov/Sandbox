@@ -1,7 +1,8 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
+using NHNortwindPlayground.Domain;
 
-namespace ClassLibrary1
+namespace NHNortwindPlayground.Mappings
 {
     public class CustomersMap : ClassMapping<Customers>
     {
@@ -21,11 +22,11 @@ namespace ClassLibrary1
             Property(x => x.Phone);
             Property(x => x.Fax);
 
-           Cache(cm =>
-                 {
-                     cm.Region("FiveSecondsCache");
-                     cm.Usage(CacheUsage.NonstrictReadWrite);
-                 });
+            Cache(cm =>
+                  {
+                      cm.Region("FiveSecondsCache");
+                      cm.Usage(CacheUsage.NonstrictReadWrite);
+                  });
 
             Bag(x => x.Orders, colmap =>
                                {

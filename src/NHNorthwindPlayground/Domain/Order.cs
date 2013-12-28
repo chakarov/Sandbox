@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ClassLibrary1
+namespace NHNortwindPlayground.Domain
 {
     public class Orders
     {

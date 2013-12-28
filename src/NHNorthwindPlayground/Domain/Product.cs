@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary1
+﻿namespace NHNortwindPlayground.Domain
 {
     public class Products
     {

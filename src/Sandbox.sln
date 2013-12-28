@@ -3,7 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHNortwindPlayground", "ClassLibrary1\NHNortwindPlayground.csproj", "{18123823-E432-4362-A161-8594E0594C44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHNortwindPlayground", "NHNorthwindPlayground\NHNortwindPlayground.csproj", "{18123823-E432-4362-A161-8594E0594C44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastlePlayground", "CastlePlayground\CastlePlayground.csproj", "{893D63FB-B3FF-40DB-B807-0FFA2BCEA008}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1F75B11F-467D-4DA9-AA4E-CB49C7C9F246}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +24,10 @@ Global
 		{18123823-E432-4362-A161-8594E0594C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18123823-E432-4362-A161-8594E0594C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18123823-E432-4362-A161-8594E0594C44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{893D63FB-B3FF-40DB-B807-0FFA2BCEA008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{893D63FB-B3FF-40DB-B807-0FFA2BCEA008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{893D63FB-B3FF-40DB-B807-0FFA2BCEA008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{893D63FB-B3FF-40DB-B807-0FFA2BCEA008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
