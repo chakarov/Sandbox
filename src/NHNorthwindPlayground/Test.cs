@@ -193,10 +193,6 @@ namespace NHNortwindPlayground
         [Fact]
         public void SLC_SqlDependencyInvalidatesCache()
         {
-            string conn = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
-            UpdateReqionSql(null);
-            SqlDependency.Start(conn);
-
             Customers cust;
             NHibernateHelper.ClearCaches(NHibernateHelper.SessionFactory);
             using (ISession session = OpenNamedSession("SqlDependency_UsesDb"))
@@ -233,56 +229,8 @@ namespace NHNortwindPlayground
                     tr.Commit();
                 }
             }
-
-            SqlDependency.Stop(conn);
         }
 
-        [Fact]
-        public void SLC_SqlDependencyShouldBeStarted()
-        {
-            string conn = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
-            UpdateReqionSql(null);
-            //SqlDependency.Start(conn);
-
-            Customers cust;
-            NHibernateHelper.ClearCaches(NHibernateHelper.SessionFactory);
-            using (ISession session = OpenNamedSession("SqlDependency_UsesDb"))
-            {
-                using (ITransaction tr = session.BeginTransaction())
-                {
-                    cust = session.Get<Customers>("ALFKI");
-                    tr.Commit();
-                    Assert.NotNull(cust);
-                    Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
-
-                }
-            }
-            using (ISession session = OpenNamedSession("SqlDependency_UsesCache"))
-            {
-                using (ITransaction tr = session.BeginTransaction())
-                {
-                    cust = session.Get<Customers>("ALFKI");
-                    tr.Commit();
-                    Assert.NotNull(cust);
-                    Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheHitCount > 0);
-                }
-            }
-
-            UpdateReqionSql("EU");
-
-            using (ISession session = OpenNamedSession("SqlDependency_shouldReCache"))
-            {
-                using (ITransaction tr = session.BeginTransaction())
-                {
-                    cust = session.Get<Customers>("ALFKI");
-                    Assert.NotNull(cust);
-                    Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
-                    tr.Commit();
-                }
-            }
-
-            //SqlDependency.Stop(conn);
-        }
 
         private void UpdateReqionSql(string region)
         {
