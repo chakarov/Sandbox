@@ -23,7 +23,7 @@ namespace NHNortwindPlayground
         [Fact]
         public void CanGetCustomer()
         {
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("CanGetCustomer"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -38,7 +38,7 @@ namespace NHNortwindPlayground
         [Fact]
         public void Linq_CanGetCustomer()
         {
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("CanGetCustomerWithLinq"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -53,7 +53,7 @@ namespace NHNortwindPlayground
         [Fact]
         public void Linq_CanGetCustomers()
         {
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("CanGetCustomersWithLinq"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -69,7 +69,7 @@ namespace NHNortwindPlayground
         {
             int pageSize = 5;
             int page = 2;
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("CanPageWithCriteriaApi"))
             {
                 ICriteria criteria = session.CreateCriteria<Customers>();
                 using (ITransaction tr = session.BeginTransaction())
@@ -105,7 +105,7 @@ namespace NHNortwindPlayground
         {
             int pageSize = 5;
             int page = 2;
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("CanPageWithLinq"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -138,7 +138,7 @@ namespace NHNortwindPlayground
         {
             Customers cust;
             NHibernateHelper.ClearCaches(NHibernateHelper.SessionFactory);
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SLC_WillUseCachedEntity_UsesDb"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -149,7 +149,7 @@ namespace NHNortwindPlayground
                 }
             }
 
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SLC_WillUseCachedEntity_UsesCache"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -164,26 +164,26 @@ namespace NHNortwindPlayground
         [Fact]
         public void SLC_CachedEntityExpires()
         {
-            Customers cust;
+            Orders ord;
             NHibernateHelper.ClearCaches(NHibernateHelper.SessionFactory);
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SLC_CachedEntityExpires_UsesDb"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
-                    cust = session.Get<Customers>("ALFKI");
-                    Assert.NotNull(cust);
+                    ord = session.Query<Orders>().FirstOrDefault(o=>o.Customers.Customerid=="ALFKI");
+                    Assert.NotNull(ord);
                     Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
                     tr.Commit();
                 }
             }
 
             Thread.Sleep(6000);
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SLC_CachedEntityExpires_UsesDbAgain"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
-                    cust = session.Get<Customers>("ALFKI");
-                    Assert.NotNull(cust);
+                    ord = session.Query<Orders>().FirstOrDefault(o => o.Customers.Customerid == "ALFKI");
+                    Assert.NotNull(ord);
                     Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
                     tr.Commit();
                 }
@@ -199,30 +199,31 @@ namespace NHNortwindPlayground
 
             Customers cust;
             NHibernateHelper.ClearCaches(NHibernateHelper.SessionFactory);
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SqlDependency_UsesDb"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
                     cust = session.Get<Customers>("ALFKI");
+                    tr.Commit();
                     Assert.NotNull(cust);
                     Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
-                    tr.Commit();
+                    
                 }
             }
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SqlDependency_UsesCache"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
                     cust = session.Get<Customers>("ALFKI");
+                    tr.Commit();
                     Assert.NotNull(cust);
                     Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheHitCount > 0);
-                    tr.Commit();
                 }
             }
 
             UpdateReqionSql("EU");
 
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("SqlDependency_shouldReCache"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -236,9 +237,56 @@ namespace NHNortwindPlayground
             SqlDependency.Stop(conn);
         }
 
+        [Fact]
+        public void SLC_SqlDependencyShouldBeStarted()
+        {
+            string conn = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
+            UpdateReqionSql(null);
+            //SqlDependency.Start(conn);
+
+            Customers cust;
+            NHibernateHelper.ClearCaches(NHibernateHelper.SessionFactory);
+            using (ISession session = OpenNamedSession("SqlDependency_UsesDb"))
+            {
+                using (ITransaction tr = session.BeginTransaction())
+                {
+                    cust = session.Get<Customers>("ALFKI");
+                    tr.Commit();
+                    Assert.NotNull(cust);
+                    Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
+
+                }
+            }
+            using (ISession session = OpenNamedSession("SqlDependency_UsesCache"))
+            {
+                using (ITransaction tr = session.BeginTransaction())
+                {
+                    cust = session.Get<Customers>("ALFKI");
+                    tr.Commit();
+                    Assert.NotNull(cust);
+                    Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheHitCount > 0);
+                }
+            }
+
+            UpdateReqionSql("EU");
+
+            using (ISession session = OpenNamedSession("SqlDependency_shouldReCache"))
+            {
+                using (ITransaction tr = session.BeginTransaction())
+                {
+                    cust = session.Get<Customers>("ALFKI");
+                    Assert.NotNull(cust);
+                    Assert.True(NHibernateHelper.SessionFactory.Statistics.SecondLevelCacheMissCount > 0);
+                    tr.Commit();
+                }
+            }
+
+            //SqlDependency.Stop(conn);
+        }
+
         private void UpdateReqionSql(string region)
         {
-            using (ISession session = NHibernateHelper.SessionFactory.OpenSession())
+            using (ISession session = OpenNamedSession("sqlUpdate"))
             {
                 using (ITransaction tr = session.BeginTransaction())
                 {
@@ -249,6 +297,13 @@ namespace NHNortwindPlayground
                     tr.Commit();
                 }
             }
+        }
+
+        internal ISession OpenNamedSession(string name)
+        {
+            var session = NHibernateHelper.SessionFactory.OpenSession();
+            NHibernateProfiler.RenameSessionInProfiler(session, name);
+            return session;
         }
     }
 }

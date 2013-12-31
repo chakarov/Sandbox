@@ -22,7 +22,11 @@ namespace NHNortwindPlayground.Mappings
             Property(x => x.Shippostalcode);
             Property(x => x.Shipcountry);
 
-            Cache(cm => cm.Usage(CacheUsage.NonstrictReadWrite));
+            Cache(cm =>
+                  {
+                      cm.Region("FiveSecondsCache");
+                      cm.Usage(CacheUsage.ReadWrite);
+                  });
 
             ManyToOne(x => x.Customers, map =>
                                         {

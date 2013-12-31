@@ -24,7 +24,7 @@ namespace NHNortwindPlayground.Mappings
 
             Cache(cm =>
                   {
-                      cm.Region("FiveSecondsCache");
+                      cm.Region("DefaultCache");
                       cm.Usage(CacheUsage.NonstrictReadWrite);
                   });
 
